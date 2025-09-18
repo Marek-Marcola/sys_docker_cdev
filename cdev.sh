@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202509090061"
+VERSION_BIN="202509180061"
 
 ID="[${0##*/}]"
 
@@ -320,13 +320,19 @@ if [ $VERSION -eq 1 ]; then
   echo "${0##*/}  $VERSION_BIN"
   [[ "$VERSION_ENV" != "" ]] && echo "cdev.env $VERSION_ENV"
   if [ $(type -t docker) ]; then
+    set -ex
     docker --version
+    { set +ex; } 2>/dev/null
   fi
   if [ $(type -t podman) ]; then
+    set -ex
     podman --version
+    { set +ex; } 2>/dev/null
   fi
   if [ $(type -t containerd) ]; then
+    set -ex
     containerd --version
+    { set +ex; } 2>/dev/null
   fi
   exit 0
 fi
