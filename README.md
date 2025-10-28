@@ -3,6 +3,8 @@ docker cdev
 
 Docker image development tools.
 
+Build environments: docker, podman
+
 Install
 -------
 Install:
