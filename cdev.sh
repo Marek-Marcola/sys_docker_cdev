@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202509180061"
+VERSION_BIN="202511060061"
 
 ID="[${0##*/}]"
 
@@ -287,7 +287,7 @@ if [ $HELP -eq 1 ]; then
   echo ""
   echo "alias:"
   echo "  -bpd = -b -p -lr -bf -ic -d"
-  echo "  -lpa = -il /dep/images -p -A"
+  echo "  -lpa = -il /dep/i -p -A"
   echo ""
   echo "env files: /usr/local/etc/cdev.env \$HOME/.cdev.env .cdev.env \$CDEVENV"
   echo "save name: is-repo-ver-date[-suffix].tar[.gz]"
