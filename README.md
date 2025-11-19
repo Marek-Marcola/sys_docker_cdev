@@ -1,7 +1,7 @@
 docker cdev
 ===========
 
-Docker image development tools.
+Container development tools.
 
 Build environments: docker, podman
 
