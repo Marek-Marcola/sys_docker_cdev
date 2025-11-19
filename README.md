@@ -21,3 +21,12 @@ Verify:
 Help:
 
     cdev.sh --help
+
+Alias:
+
+    # cat > /etc/profile.d/zlocal-cdev.sh <<\EOF
+    c() {
+      local desc="@@container development (via cdev.sh)@@"
+      cdev.sh $@
+    }
+    EOF
