@@ -10,7 +10,7 @@ Install
 Install:
 
     ./cdev.sh --install
-
+    -- or --
     cp -fv cdev.env /usr/local/etc
     cp -fv cdev.sh /usr/local/bin
 
