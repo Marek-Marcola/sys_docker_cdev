@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202511060061"
+VERSION_BIN="202511270061"
 
 ID="[${0##*/}]"
 
@@ -59,8 +59,7 @@ s=0
 ls | grep -q Dockerfile
 [[ $? -eq 0 ]] && REPO="$(basename $(pwd))"
 
-while [ $# -gt 0 ]
-do
+while [ $# -gt 0 ]; do
   case $1 in
     --inst*|-inst*)
       INSTALL=1
@@ -299,6 +298,9 @@ if [ $HELP -eq 1 ]; then
   exit 0
 fi
 
+#
+# stage: CONFIG
+#
 for f in /usr/local/etc/cdev.env $HOME/.cdev.env .cdev.env $CDEVENV; do
   if [ -e $f ]; then
     [[ "$EFILE" != "" ]] && EFILE="$EFILE $f" || EFILE="$f"
