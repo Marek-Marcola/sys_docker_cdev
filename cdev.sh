@@ -250,6 +250,9 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+#
+# stage: HELP
+#
 if [ $HELP -eq 1 ]; then
   echo "$(basename $0) -install                                                # install"
   echo "$(basename $0) -version                                                # version"
