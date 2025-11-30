@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202511270061"
+VERSION_BIN="202511300061"
 
 ID="[${0##*/}]"
 
@@ -318,6 +318,38 @@ if [ "$RUN_OPT_CUSTOM2" != "" ]; then
   RUN_OPT_CUSTOM2=$(echo $RUN_OPT_CUSTOM2|xargs)
 fi
 
+[[ "$NA1" = "1"  ]] && RUN_OPT_CUSTOM1=""
+[[ "$NA2" = "1"  ]] && RUN_OPT_CUSTOM2=""
+[[ "$DATE" = ""  ]] && DATE="$(date '+%s')"
+[[ "$VER" != ""  ]] && TAGS="$VER.$(date -d @$DATE '+%Y%m%d%H%M') $TAGS"
+[[ "$TAG" != ""  ]] && TAGS="$TAGS $TAG"
+[[ "$FREG" != "" ]] && FROM="$FREG/$FROM"
+
+TAGS=$(echo $TAGS|tr "," " ")
+
+for t in $TAGS; do
+  T="$T ${t}${SUFFIX}"
+done
+
+TAGS=$(echo $T)
+
+if [ $DEBUG != 0 -o $BUILDKIT != 0 ]; then
+  export DOCKER_BUILDKIT=1
+  BUILD_OPT_DEBUG="--progress plain"
+fi
+
+if [ "$DFILE" != "" ]; then
+  :
+elif [ -f Dockerfile-${REPO}-${VER}${INST} ]; then
+  DFILE=Dockerfile-${REPO}-${VER}${INST}
+elif [ -f Dockerfile-${REPO}${INST} ]; then
+  DFILE=Dockerfile-${REPO}${INST}
+elif [ -f Dockerfile-${VER}${INST} ]; then
+  DFILE=Dockerfile-${VER}${INST}
+elif [ -f Dockerfile${INST} ]; then
+  DFILE=Dockerfile${INST}
+fi
+
 #
 # stage: VERSION
 #
@@ -365,38 +397,6 @@ if [ $INSTALL -eq 1 ]; then
     done
   fi
   exit 0
-fi
-
-[[ "$NA1" = "1"  ]] && RUN_OPT_CUSTOM1=""
-[[ "$NA2" = "1"  ]] && RUN_OPT_CUSTOM2=""
-[[ "$DATE" = ""  ]] && DATE="$(date '+%s')"
-[[ "$VER" != ""  ]] && TAGS="$VER.$(date -d @$DATE '+%Y%m%d%H%M') $TAGS"
-[[ "$TAG" != ""  ]] && TAGS="$TAGS $TAG"
-[[ "$FREG" != "" ]] && FROM="$FREG/$FROM"
-
-TAGS=$(echo $TAGS|tr "," " ")
-
-for t in $TAGS; do
-  T="$T ${t}${SUFFIX}"
-done
-
-TAGS=$(echo $T)
-
-if [ $DEBUG != 0 -o $BUILDKIT != 0 ]; then
-  export DOCKER_BUILDKIT=1
-  BUILD_OPT_DEBUG="--progress plain"
-fi
-
-if [ "$DFILE" != "" ]; then
-  :
-elif [ -f Dockerfile-${REPO}-${VER}${INST} ]; then
-  DFILE=Dockerfile-${REPO}-${VER}${INST}
-elif [ -f Dockerfile-${REPO}${INST} ]; then
-  DFILE=Dockerfile-${REPO}${INST}
-elif [ -f Dockerfile-${VER}${INST} ]; then
-  DFILE=Dockerfile-${VER}${INST}
-elif [ -f Dockerfile${INST} ]; then
-  DFILE=Dockerfile${INST}
 fi
 
 #
