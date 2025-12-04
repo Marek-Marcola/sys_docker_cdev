@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202511300061"
+VERSION_BIN="202512050061"
 
 ID="[${0##*/}]"
 
@@ -647,13 +647,15 @@ if [ $SAVE -ne 0 ]; then
   fi
 
   T=$(date -d @$DATE '+%Y%m%d%H%M')
+
   set -ex
-  docker save -o $SDIR/${PREFIX}-${REPO}-${VER}-${T}${SUFFIX}.tar  $PREFIX/$REPO:$VER.${T}${SUFFIX}
+  docker save -o $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar $PREFIX/$REPO:$VER.${T}${SUFFIX}
   { set +ex; } 2>/dev/null
+
   if [ $GZIP -ne 0 ]; then
     set -ex
-    gzip $SDIR/${PREFIX}-${REPO}-${VER}-${T}${SUFFIX}.tar
-    chmod a+r $SDIR/${PREFIX}-${REPO}-${VER}-${T}${SUFFIX}.tar.gz
+    gzip $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar
+    chmod a+r $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar.gz
     { set +ex; } 2>/dev/null
   fi
 fi
@@ -683,10 +685,10 @@ if [ $LIST -eq 2 ]; then
 
   for r in $REGISTRY_HOST; do
     if [ "$REPO" != "" ]; then
-      [[ "$REGP" != "" ]] && FREPO=${REGP}/${REPO} || FREPO=${REPO}
-      echo | xargs -L1 -t curl --netrc-file ${REGISTRY_AUTH} -s -k -L ${r}/v2/${FREPO}/tags/list | jq
+      [[ "$REGP" != "" ]] && FREPO=$REGP/$REPO || FREPO=$REPO
+      echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/$FREPO/tags/list | jq
     else
-      echo | xargs -L1 -t curl --netrc-file ${REGISTRY_AUTH} -s -k -L ${r}/v2/_catalog | jq
+      echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/_catalog | jq
     fi
   done
 fi
