@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202512060061"
+VERSION_BIN="202512070061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -919,6 +919,6 @@ if [ $EXEC -eq 1 ]; then
     docker container exec -ti $NAME $C
     { set +ex; } 2>/dev/null
   else
-    echo echo "$ID: error: unable to find running container: image=$PREFIX/$REPO:$T name=cdev-$REPO-xxxxx"
+    echo "$ID: error: unable to find running container: image=$PREFIX/$REPO:$T name=cdev-$REPO-xxxxx"
   fi
 fi
