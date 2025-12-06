@@ -806,8 +806,13 @@ if [ $CHAIN -ne 0 ]; then
   fi
 
   docker image history --format "table {{printf \"%.1000s\" .CreatedBy}}" --no-trunc $PREFIX/$REPO:$VER$SUFFIX | \
-    grep ENV | grep INFO_DATE | awk -FENV '{print $2}' | xargs -L1 | \
-    sed 's/INFO_//g' | sed 's/DATE=//g' | column -t
+    grep ENV | \
+    grep INFO_DATE | \
+    awk -FENV '{print $2}' | \
+    xargs -L1 | \
+    sed 's/INFO_//g' | \
+    sed 's/DATE=//g' | \
+    column -t
   true
 fi
 
