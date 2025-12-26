@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202512070061"
+VERSION_BIN="202512260061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -158,6 +158,11 @@ while [ $# -gt 0 ]; do
       RUN=2
       shift
       ;;
+    -rs)
+      RUN=1
+      ARGS2="bash -l"
+      shift
+      ;;
     -k)
       RUN=3
       shift
@@ -289,6 +294,7 @@ if [ $HELP -eq 1 ]; then
   echo "  -Sd  sdir ($SDIR)"
   echo ""
   echo "alias:"
+  echo "  -rs  = -r -- bash -l"
   echo "  -bpd = -b -p -lr -bf -ic -d"
   echo "  -lpa = -il /dep/i -p -A"
   echo ""
