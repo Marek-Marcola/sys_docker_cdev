@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202512260061"
+VERSION_BIN="202512760061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -43,6 +43,8 @@ HIST=0
 CHAIN=0
 FILES=0
 INSPECT=0
+PRUNE=0
+PRUNE_TYPE=""
 RUN=0
 EXEC=0
 DEL=0
@@ -118,6 +120,11 @@ while [ $# -gt 0 ]; do
     -i)
       INSPECT=1
       shift
+      ;;
+    -ip)
+      PRUNE=1
+      PRUNE_TYPE="$2"
+      shift; shift
       ;;
     -ic)
       CHAIN=1
@@ -284,6 +291,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -is dir  [-R repo] [-V ver] [-t date] [-S-suffix] [-z]  # image save, repo, version, YYYYMMDDhhmm, suffix, gzip"
   echo "$SN -il dir  [-p] [-A]                                      # image load (all from dir), push, archive"
   echo "$SN -il file [-R repo -V ver -t date [-S-suffix]] [-p] [-A] # image load, repo, version, YYYYMMDDhhmm, suffix, push, archive"
+  echo "$SN -ip d|is|a                                              # image prune: dangling, is/*, all unused"
   echo "$SN -ls                                                     # spooler list"
   echo "$SN                                                         # info"
   echo ""
@@ -776,6 +784,30 @@ if [ $INSPECT -ne 0 ]; then
   set -ex
   docker image inspect $PREFIX/$REPO:$VER
   { set +ex; } 2>/dev/null
+fi
+
+#
+# stage: PRUNE
+#
+if [ $PRUNE -ne 0 ]; then
+  (( $s != 0 )) && echo; ((++s))
+  echo "$ID: stage: PRUNE (TYPE=$PRUNE_TYPE)"
+
+  if [ "$PRUNE_TYPE" = "d" ]; then
+    set -ex
+    docker image prune -f
+    { set +ex; } 2>/dev/null
+  elif [ "$PRUNE_TYPE" = "is" ]; then
+    set -ex
+    docker image prune --all --filter label=info.from
+    { set +ex; } 2>/dev/null
+  elif [ "$PRUNE_TYPE" = "a" ]; then
+    set -ex
+    docker image prune --all
+    { set +ex; } 2>/dev/null
+  else
+    echo "$ID: error: unknown prune type"
+  fi
 fi
 
 #
