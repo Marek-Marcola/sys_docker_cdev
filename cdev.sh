@@ -807,6 +807,7 @@ if [ $PRUNE -ne 0 ]; then
     { set +ex; } 2>/dev/null
   else
     echo "$ID: error: unknown prune type"
+    exit 1
   fi
 fi
 
