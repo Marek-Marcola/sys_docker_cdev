@@ -291,7 +291,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -is dir  [-R repo] [-V ver] [-t date] [-S-suffix] [-z]  # image save, repo, version, YYYYMMDDhhmm, suffix, gzip"
   echo "$SN -il dir  [-p] [-A]                                      # image load (all from dir), push, archive"
   echo "$SN -il file [-R repo -V ver -t date [-S-suffix]] [-p] [-A] # image load, repo, version, YYYYMMDDhhmm, suffix, push, archive"
-  echo "$SN -ip d|is|a                                              # image prune: dangling, is/*, all unused"
+  echo "$SN -ip d|is|a                                              # image prune: dangling, unused is/*, all unused"
   echo "$SN -ls                                                     # spooler list"
   echo "$SN                                                         # info"
   echo ""
