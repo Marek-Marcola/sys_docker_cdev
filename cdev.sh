@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202512760061"
+VERSION_BIN="202512960061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -92,7 +92,6 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     -b)
-      BUILDF=1
       BUILD=1
       CHAIN=1
       shift
