@@ -816,7 +816,7 @@ if [ $PRUNE -ne 0 ]; then
     docker image prune --all
     { set +ex; } 2>/dev/null
   else
-    echo "$ID: error: supported prune types: d - dangling, is - is/*, a - all"
+    echo "$ID: error: supported image prune types: d - dangling, is - is/*, a - all"
     exit 1
   fi
 fi
