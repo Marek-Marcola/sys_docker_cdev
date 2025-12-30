@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202512960061"
+VERSION_BIN="202512300061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -805,7 +805,7 @@ if [ $PRUNE -ne 0 ]; then
     docker image prune --all
     { set +ex; } 2>/dev/null
   else
-    echo "$ID: error: unknown prune type"
+    echo "$ID: error: supported prune types: d - dangling, is - is/*, a - all"
     exit 1
   fi
 fi
