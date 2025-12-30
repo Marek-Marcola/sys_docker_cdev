@@ -25,7 +25,6 @@ GZIP=1
 SDIR="/dep/i"
 
 WIDTH=80
-KEEP=5
 KEEPR=20
 
 INSTALL=0
@@ -48,6 +47,7 @@ PRUNE_TYPE=""
 RUN=0
 EXEC=0
 DEL=0
+DEL_KEEP=5
 DELR=0
 HELP=0
 QUIET=0
@@ -82,7 +82,7 @@ while [ $# -gt 0 ]; do
       CHAIN=1
       PUSH=1
       LIST=2
-      DEL=$KEEP
+      DEL=1
       shift
       ;;
     -lpa)
@@ -182,7 +182,8 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     -d*)
-      [[ "$1" != "-d" ]] && DEL=${1:2} || DEL=$KEEP
+      DEL=1
+      [[ "$1" != "-d" ]] && DEL_KEEP=${1:2}
       shift
       ;;
     -R)
@@ -282,7 +283,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -l  [-R repo]                                           # list prefix/repo"
   echo "$SN -lr [-R repo]                                           # list regs/prefix/repo"
   echo "$SN -dr[k] [-R repo]                                        # image delete regs/prefix/repo (default: k[eep]=$KEEPR)"
-  echo "$SN -d[k]  [-R repo]                                        # image delete prefix/repo (default: k[eep]=$KEEP)"
+  echo "$SN -d[k]  [-R repo]                                        # image delete prefix/repo (default: k[eep]=$DEL_KEEP)"
   echo "$SN -H[w]  [-R repo]                                        # image history (default: w[idth]=$WIDTH)"
   echo "$SN -i                                                      # image inspect"
   echo "$SN -ic                                                     # image chain"
@@ -739,16 +740,26 @@ fi
 #
 if [ $DEL -ne 0 ]; then
   (( $s != 0 )) && echo; ((++s))
-  echo "$ID: stage: DELETE (keep=$DEL)"
+  echo "$ID: stage: DELETE (keep=$DEL_KEEP)"
 
   if [ "$REPO" = "" ]; then
     echo "$ID: error: require repo"
     exit 1
   fi
 
-  I=$(docker image ls --format "{{.ID}}" $PREFIX/$REPO | uniq | head -${DEL} | tail -1)
-  docker image ls -q --filter before=$I $PREFIX/$REPO | tac | xargs -L1 -tr docker image rm -f
-  #true
+  if ! [[ $DEL_KEEP =~ ^[0-9]+$ ]] ; then
+    echo "$ID: error: keep not integer"
+    exit 1
+  fi
+
+  if [ $DEL_KEEP -eq 0 ]; then
+    docker image ls -q $PREFIX/$REPO | tac | xargs -L1 -tr docker image rm -f
+  else
+    B=$(docker image ls --format "{{.ID}}" $PREFIX/$REPO | uniq | head -$DEL_KEEP | tail -1)
+    if [ "$B" != "" ]; then
+      docker image ls -q --filter before=$B $PREFIX/$REPO | tac | xargs -L1 -tr docker image rm -f
+    fi
+  fi
 fi
 
 #
