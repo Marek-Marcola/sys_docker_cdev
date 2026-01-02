@@ -77,7 +77,6 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     -bpd)
-      BUILDF=1
       BUILD=1
       CHAIN=1
       PUSH=1
@@ -303,7 +302,7 @@ if [ $HELP -eq 1 ]; then
   echo ""
   echo "alias:"
   echo "  -rs  = -r -- bash -l"
-  echo "  -bpd = -b -p -lr -bf -ic -d"
+  echo "  -bpd = -b -p -lr -ic -d"
   echo "  -lpa = -il /dep/i -p -A"
   echo ""
   echo "env files: /usr/local/etc/cdev.env \$HOME/.cdev.env .cdev.env \$CDEVENV"
