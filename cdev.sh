@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202512310061"
+VERSION_BIN="202601020061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -309,11 +309,15 @@ if [ $HELP -eq 1 ]; then
   echo "env files: /usr/local/etc/cdev.env \$HOME/.cdev.env .cdev.env \$CDEVENV"
   echo "save name: is-repo-ver-date[-suffix].tar[.gz]"
   echo ""
-  echo "note:"
-  echo "  c -I-i"
-  echo "  c -I-debian -F is/debian13 -S-d13"
-  echo "  c -F is/debian13 -S-d13"
-  echo "  c -bt debug -S-debug"
+  echo "note (build image):"
+  echo "  c"
+  echo "  c -b"
+  echo "  c -bpd"
+  echo "  c -bpd -is /tmp"
+  echo ""
+  echo "note (load images):"
+  echo "  c -ls"
+  echo "  c -lpa"
   exit 0
 fi
 
