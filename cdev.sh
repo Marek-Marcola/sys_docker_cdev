@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202601020061"
+VERSION_BIN="202601050061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -81,6 +81,16 @@ while [ $# -gt 0 ]; do
       CHAIN=1
       PUSH=1
       LIST=2
+      DEL=1
+      shift
+      ;;
+    -bpsd)
+      BUILD=1
+      CHAIN=1
+      PUSH=1
+      LIST=2
+      SAVE=1
+      SDIR=/tmp
       DEL=1
       shift
       ;;
@@ -301,9 +311,10 @@ if [ $HELP -eq 1 ]; then
   echo "  -Sd  sdir ($SDIR)"
   echo ""
   echo "alias:"
-  echo "  -rs  = -r -- bash -l"
-  echo "  -bpd = -b -p -lr -ic -d"
-  echo "  -lpa = -il /dep/i -p -A"
+  echo "  -rs   = -r -- bash -l"
+  echo "  -bpd  = -b -p -lr -ic -d"
+  echo "  -bpsd = -b -p -lr -ic -d -is /tmp"
+  echo "  -lpa  = -il /dep/i -p -A"
   echo ""
   echo "env files: /usr/local/etc/cdev.env \$HOME/.cdev.env .cdev.env \$CDEVENV"
   echo "save name: is-repo-ver-date[-suffix].tar[.gz]"
@@ -312,7 +323,7 @@ if [ $HELP -eq 1 ]; then
   echo "  c"
   echo "  c -b"
   echo "  c -bpd"
-  echo "  c -bpd -is /tmp"
+  echo "  c -bpsd"
   echo ""
   echo "note (load images):"
   echo "  c -ls"
