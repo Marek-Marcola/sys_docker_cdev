@@ -19,6 +19,7 @@ FREG=""
 FROM=""
 REPO=""
 VER=""
+VERS=""
 TAG=""
 DATE=""
 GZIP=1
@@ -279,8 +280,8 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -install                                                # install"
   echo "$SN -version                                                # version"
   echo "$SN -P  [-R repo] [-F from] [-FR reg]                       # pull, repo, from_image, from_reg"
-  echo "$SN -b  [-R repo] [-V ver] [-T tags] [-t date]              # build, repo, version, tags, tag YYYYMMDDhhmm"
-  echo "            [-FR reg] [-F from] [-D] [-bk]                      # from_reg, from_image, debug, BuildKit"
+  echo "$SN -b  [-R repo] [-V vers] [-T tags] [-t date]             # build, repo, versions, tags, tag YYYYMMDDhhmm"
+  echo "            [-F from] [-FR reg] [-D] [-bk]                      # from_image, from_reg, debug, BuildKit"
   echo "            [-DF dockerfile] [-I[inst]]                         # dockerfile, instance (default: inst=i)"
   echo "            [-bt type] [-S-suffix]                              # build type, suffix"
   echo "$SN -bf [-R repo]                                           # build from list, repo"
@@ -347,6 +348,9 @@ fi
 if [ "$RUN_OPT_CUSTOM2" != "" ]; then
   RUN_OPT_CUSTOM2=$(echo $RUN_OPT_CUSTOM2|xargs)
 fi
+
+VERS=$(echo $VER| tr "," " ")
+VER=$(echo $VERS| awk '{printf "%s",$1}')
 
 [[ "$NA1" = "1"  ]] && RUN_OPT_CUSTOM1=""
 [[ "$NA2" = "1"  ]] && RUN_OPT_CUSTOM2=""
@@ -447,6 +451,7 @@ if [ $QUIET -eq 0 ]; then
   echo "type   = ${TYPE:-[none]}"
   echo "repo   = ${REPO:-[none]}"
   echo "ver    = ${VER:-[none]}"
+  echo "vers   = ${VERS:-[none]}"
   echo "tags   = ${VER:-[none]}${SUFFIX} $TAGS"
   echo "regs   = ${REGISTRY_HOST:-[none]}"
   echo "regp   = ${REGP:-[none]}"
@@ -617,6 +622,7 @@ if [ $BUILD -ne 0 ]; then
     --build-arg TYPE="$TYPE" \
     --build-arg REPO="$REPO" \
     --build-arg VER="$VER" \
+    --build-arg VERS="$VERS" \
     --tag $PREFIX/$REPO:${VER}${SUFFIX} \
     --file $DFILE \
     --force-rm \
