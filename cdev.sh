@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202601050061"
+VERSION_BIN="202601060061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -349,8 +349,8 @@ if [ "$RUN_OPT_CUSTOM2" != "" ]; then
   RUN_OPT_CUSTOM2=$(echo $RUN_OPT_CUSTOM2|xargs)
 fi
 
-VERS=$(echo $VER| tr "," " ")
-VER=$(echo $VERS| awk '{printf "%s",$1}')
+VERS=$(echo $VER|tr "," " ")
+VER=$(echo $VERS|awk '{printf "%s",$1}')
 
 [[ "$NA1" = "1"  ]] && RUN_OPT_CUSTOM1=""
 [[ "$NA2" = "1"  ]] && RUN_OPT_CUSTOM2=""
