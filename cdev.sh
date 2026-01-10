@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202601060061"
+VERSION_BIN="202601100061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -47,6 +47,7 @@ PRUNE=0
 PRUNE_TYPE=""
 RUN=0
 EXEC=0
+EVAL=0
 DEL=0
 DEL_KEEP=5
 DELR=0
@@ -187,6 +188,10 @@ while [ $# -gt 0 ]; do
       EXEC=1
       shift
       ;;
+    -x)
+      EVAL=1
+      shift
+      ;;
     -dr*)
       [[ "$1" != "-dr" ]] && DELR=${1:3} || DELR=$KEEPR
       shift
@@ -292,7 +297,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -e  [-R repo] [-V ver|tag] [args1]                      # docker exec in reg/prefix/repo:tag cdev-repo-xxxxx"
   echo "$SN -l  [-R repo]                                           # list prefix/repo"
   echo "$SN -lr [-R repo]                                           # list regs/prefix/repo"
-  echo "$SN -dr[k] [-R repo]                                        # image delete regs/prefix/repo (default: k[eep]=$KEEPR)"
+  echo "$SN -dr[k] [-R repo] [-x]                                   # image delete regs/prefix/repo (default: k[eep]=$KEEPR),show,run"
   echo "$SN -d[k]  [-R repo]                                        # image delete prefix/repo (default: k[eep]=$DEL_KEEP)"
   echo "$SN -H[w]  [-R repo]                                        # image history (default: w[idth]=$WIDTH)"
   echo "$SN -i                                                      # image inspect"
@@ -734,7 +739,7 @@ fi
 #
 if [ $DELR -ne 0 ]; then
   (( $s != 0 )) && echo; ((++s))
-  echo "$ID: stage: DELETE-REG (keep=$DELR)"
+  echo "$ID: stage: DELETE-REG (keep=$DELR,EVAL=$EVAL)"
 
   if [ "$REPO" = "" -o "$REGISTRY_HOST" = ""  ]; then
     echo "$ID: error: require repo,reg"
@@ -750,7 +755,9 @@ if [ $DELR -ne 0 ]; then
         grep -i docker-content-digest|awk '{print $2}' | tr -d "\t\r\n")
       if [ "$DCD" != "" ]; then
         echo "# $TAG"
-        echo | xargs -L1 -t curl --netrc-file ${REGISTRY_AUTH} -k -H "Accept:application/vnd.docker.distribution.manifest.v2+json" -X DELETE ${r}/v2/$FREPO/manifests/$DCD
+        if [ $EVAL -ne 0 ]; then
+          echo | xargs -L1 -t curl --netrc-file ${REGISTRY_AUTH} -k -H "Accept:application/vnd.docker.distribution.manifest.v2+json" -X DELETE ${r}/v2/$FREPO/manifests/$DCD
+        fi
       fi
     done
   done
