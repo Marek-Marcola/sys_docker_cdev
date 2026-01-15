@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202601100061"
+VERSION_BIN="202601160061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -97,6 +97,7 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     -lpa)
+      QUIET=1
       LOAD=1
       PUSH=1
       ARCH=1
@@ -160,6 +161,7 @@ while [ $# -gt 0 ]; do
       shift; shift
       ;;
     -ls)
+      QUIET=1
       SLIST=1
       shift
       ;;
@@ -320,7 +322,7 @@ if [ $HELP -eq 1 ]; then
   echo "  -rs   = -r -- bash -l"
   echo "  -bpd  = -b -p -lr -ic -d"
   echo "  -bpsd = -b -p -lr -ic -d -is /tmp"
-  echo "  -lpa  = -il /dep/i -p -A"
+  echo "  -lpa  = -il /dep/i -p -A -q"
   echo ""
   echo "env files: /usr/local/etc/cdev.env \$HOME/.cdev.env .cdev.env \$CDEVENV"
   echo "save name: is-repo-ver-date[-suffix].tar[.gz]"
