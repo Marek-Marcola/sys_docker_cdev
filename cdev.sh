@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202602050061"
+VERSION_BIN="202602100061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -693,12 +693,14 @@ if [ $SAVE -ne 0 ]; then
 
   set -ex
   docker save -o $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar $PREFIX/$REPO:$VER.${T}${SUFFIX}
+  ls -lh $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar
   { set +ex; } 2>/dev/null
 
   if [ $GZIP -ne 0 ]; then
     set -ex
     gzip $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar
     chmod a+r $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar.gz
+    ls -lh $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar.gz
     { set +ex; } 2>/dev/null
   fi
 fi
