@@ -698,6 +698,7 @@ if [ $SAVE -ne 0 ]; then
   { set +ex; } 2>/dev/null
 
   if [ $GZIP -ne 0 ]; then
+    echo
     set -ex
     gzip $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar
     chmod a+r $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar.gz
