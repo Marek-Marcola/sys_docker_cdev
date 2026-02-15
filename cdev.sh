@@ -511,6 +511,7 @@ if [ $ESHOW -eq 1 ]; then
       set -ex
       sed -n "/^if.*$REPO/,/^fi/p" $f
       { set +ex; } 2>/dev/null
+      echo
     fi
   done
 fi
