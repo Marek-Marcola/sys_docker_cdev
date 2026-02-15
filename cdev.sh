@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202602100061"
+VERSION_BIN="202602150061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -51,6 +51,7 @@ EVAL=0
 DEL=0
 DEL_KEEP=5
 DELR=0
+ESHOW=0
 HELP=0
 QUIET=0
 
@@ -252,6 +253,11 @@ while [ $# -gt 0 ]; do
       [[ "$1" != "-S" ]] && SUFFIX="${1:2}" || SUFFIX=""
       shift
       ;;
+    -s)
+      ESHOW=1
+      QUIET=1
+      shift
+      ;;
     -na1)
       NA1=1
       shift
@@ -310,6 +316,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -il file [-R repo -V ver -t date [-S-suffix]] [-p] [-A] # image load, repo, version, YYYYMMDDhhmm, suffix, push, archive"
   echo "$SN -ip d|is|a                                              # image prune: dangling, unused is/*, all unused"
   echo "$SN -ls                                                     # spooler list"
+  echo "$SN -s                                                      # env show"
   echo "$SN                                                         # info"
   echo ""
   echo "opts:"
@@ -490,6 +497,22 @@ if [ $QUIET -eq 0 ]; then
     echo -n "docs   = "
     echo "$DOCS" | sed 's/\!\!/\n/g' | sed 's/^[ \t]*//' | sed '/^$/d' | sed '2,$ s/^/         /'
   fi
+fi
+
+#
+# stage: ENV-SHOW
+#
+if [ $ESHOW -eq 1 ]; then
+  (( $s != 0 )) && echo; ((++s))
+  echo "$ID: stage: ENV-SHOW"
+
+  for f in /usr/local/etc/cdev.env $HOME/.cdev.env .cdev.env $CDEVENV; do
+    if [ -e $f ]; then
+      set -ex
+      sed -n "/^if.*$REPO/,/^fi/p" $f
+      { set +ex; } 2>/dev/null
+    fi
+  done
 fi
 
 #
