@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202602150061"
+VERSION_BIN="202602200061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -542,12 +542,15 @@ if [ $LOAD -ne 0 ]; then
     { set +ex; } 2>/dev/null
     echo
 
-    ls is-*.tar.gz 2>/dev/null | sort | \
-    while read I; do
-      set -ex
-      gunzip $I 2>&1 | sed 's/^/  /'
-      { set +ex; } 2>/dev/null
-    done
+    if [ -n "$(ls is-*.tar.gz 2>/dev/null)" ]; then
+      ls is-*.tar.gz 2>/dev/null | sort | \
+      while read I; do
+        set -ex
+        gunzip $I
+        { set +ex; } 2>/dev/null
+      done
+      echo
+    fi
 
     ls is-*.tar 2>/dev/null | sort | \
     while read I; do
@@ -725,6 +728,11 @@ if [ $SAVE -ne 0 ]; then
     echo
     set -ex
     gzip $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar
+    gzip -lv $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar.gz
+    { set +ex; } 2>/dev/null
+
+    echo
+    set -ex
     chmod a+r $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar.gz
     ls -ogh --time-style=long $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar.gz
     { set +ex; } 2>/dev/null
