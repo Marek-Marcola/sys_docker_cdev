@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202602200061"
+VERSION_BIN="202603200061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -345,6 +345,20 @@ if [ $HELP -eq 1 ]; then
   echo "  c -lpa"
   exit 0
 fi
+
+#
+# stage: FUNCTIONS
+#
+
+# get ipv4 of network interface
+ipa() {
+  ifconfig $1 | grep mask | awk '{print $2}'
+}
+
+# get ipv4 of host name
+n2a() {
+  getent -i ahostsv4 $1 | head -1 | awk '{print $1}'
+}
 
 #
 # stage: CONFIG
