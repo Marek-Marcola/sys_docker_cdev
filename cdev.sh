@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="202603200061"
+VERSION_BIN="202603250061"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -256,6 +256,7 @@ while [ $# -gt 0 ]; do
     -s)
       ESHOW=1
       QUIET=1
+      [[ -n "$2" ]] && REPO="$2" && shift
       shift
       ;;
     -na1)
@@ -316,7 +317,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -il file [-R repo -V ver -t date [-S-suffix]] [-p] [-A] # image load, repo, version, YYYYMMDDhhmm, suffix, push, archive"
   echo "$SN -ip d|is|a                                              # image prune: dangling, unused is/*, all unused"
   echo "$SN -ls                                                     # spooler list"
-  echo "$SN -s                                                      # env show"
+  echo "$SN -s [re]                                                 # env show"
   echo "$SN                                                         # info"
   echo ""
   echo "opts:"
