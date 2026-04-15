@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260413"
+VERSION_BIN="260415"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -35,7 +35,7 @@ BUILD=0
 BUILDF=0
 PUSH=0
 SAVE=0
-LOAD=0
+SLOAD=0
 SLIST=0
 ARCH=0
 LIST=0
@@ -99,7 +99,7 @@ while [ $# -gt 0 ]; do
       ;;
     -lpa)
       QUIET=1
-      LOAD=1
+      SLOAD=1
       PUSH=1
       ARCH=1
       shift
@@ -157,7 +157,7 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     -il)
-      LOAD=1
+      SLOAD=1
       SDIR="$2"
       shift; shift
       ;;
@@ -532,11 +532,11 @@ if [ $ESHOW -eq 1 ]; then
 fi
 
 #
-# stage: LOAD
+# stage: SPOOLER-LOAD
 #
-if [ $LOAD -ne 0 ]; then
+if [ $SLOAD -ne 0 ]; then
   (( $s != 0 )) && echo; ((++s))
-  echo "$ID: stage: LOAD"
+  echo "$ID: stage: SPOOLER-LOAD"
 
   if [ ! -f "$SDIR" -a ! -d "$SDIR" ]; then
     echo "$ID: error: access: $SDIR"
