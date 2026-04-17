@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260415"
+VERSION_BIN="260417"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -28,8 +28,10 @@ SDIR="/dep/i"
 WIDTH=80
 KEEPR=20
 
-INSTALL=0
 VERSION=0
+INSTALL_RSYNC=0
+INSTALL_ANPB=0
+INSTALL_ANPB_HP="cdev"
 PULL=0
 BUILD=0
 BUILDF=0
@@ -67,12 +69,17 @@ ls | grep -q Dockerfile
 
 while [ $# -gt 0 ]; do
   case $1 in
-    --inst*|-inst*)
-      INSTALL=1
-      shift
-      ;;
     --vers*|-vers*)
       VERSION=1
+      shift
+      ;;
+    --inst*|-inst*)
+      INSTALL_RSYNC=1
+      shift
+      ;;
+    --anpb|-anpb)
+      INSTALL_ANPB=1
+      [[ -n "$2" && ${2:0:1} != "-" ]] && INSTALL_ANPB_HP="$2" && shift
       shift
       ;;
     -P)
@@ -291,8 +298,9 @@ done
 # stage: HELP
 #
 if [ $HELP -eq 1 ]; then
-  echo "$SN -install                                                # install"
   echo "$SN -version                                                # version"
+  echo "$SN -install                                                # install with rsync"
+  echo "$SN -anpb [host_pattern] [-x]                               # install with ansible"
   echo "$SN -P  [-R repo] [-F from] [-FR reg]                       # pull, repo, from_image, from_reg"
   echo "$SN -b  [-R repo] [-V vers] [-T tags] [-t date]             # build, repo, versions, tags, tag YYYYMMDDhhmm"
   echo "            [-F from] [-FR reg] [-D] [-bk]                      # from_image, from_reg, debug, BuildKit"
@@ -438,9 +446,12 @@ if [ $VERSION -eq 1 ]; then
 fi
 
 #
-# stage: INSTALL
+# stage: INSTALL-RSYNC
 #
-if [ $INSTALL -eq 1 ]; then
+if [ $INSTALL_RSYNC -eq 1 ]; then
+  (( $s != 0 )) && echo; ((++s))
+  echo "$ID: stage: INSTALL-RSYNC"
+
   if [ -f cdev.env ]; then
     for d in /usr/local/etc /pub/pkb/kb/data/999210-cdev/999210-000020_cdev_script /pub/pkb/pb/playbooks/999210-cdev/files; do
       if [ -d $d ]; then
@@ -459,6 +470,32 @@ if [ $INSTALL -eq 1 ]; then
       fi
     done
   fi
+
+  exit 0
+fi
+
+#
+# stage: INSTALL-ANPB
+#
+if [ $INSTALL_ANPB -eq 1 ]; then
+  (( $s != 0 )) && echo; ((++s))
+  echo "$ID: stage: INSTALL-ANPB (EVAL=$EVAL)"
+
+  if [ ! $(type -t anpb) ]; then
+    echo "$ID: error: command not found: anpb"
+    exit 1
+  fi
+
+  if [ $EVAL -eq 0 ]; then
+    set -ex
+    anpb cdev_install.yml -e h=$INSTALL_ANPB_HP -v --check --diff
+    { set +ex; } 2>/dev/null
+  else
+    set -ex
+    anpb cdev_install.yml -e h=$INSTALL_ANPB_HP -v
+    { set +ex; } 2>/dev/null
+  fi
+
   exit 0
 fi
 
