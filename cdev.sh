@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260418"
+VERSION_BIN="260420"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -1040,7 +1040,7 @@ if [ $RUN -eq 2 ]; then
   [[ "$VER" = "" ]] && T=latest || T=$VER
   NAME=cdev-$REPO-$(shuf -zer -n5 {a..z} {0..9}|col -b)
   REG=$(echo $REGISTRY_HOST|awk '{print $1}'|sed -e 's#^http://##' -e 's#^https://##')
-  [[ "$REGP" != "" ]] && REG=${REG}/${REGP}
+  [[ "$REGP" != "" ]] && REG=$REG/$REGP
 
   set -ex
   docker run --rm -ti --name $NAME $RUN_OPT_CUSTOM1 ${ARGS1[*]} $REG/$REPO:$T $RUN_OPT_CUSTOM2 ${ARGS2[*]}
