@@ -490,15 +490,11 @@ if [ $INSTALL_ANPB -eq 1 ]; then
     exit 1
   fi
 
-  if [ $EVAL -eq 0 ]; then
-    set -ex
-    anpb cdev_install.yml -e h=$INSTALL_ANPB_HP --check --diff
-    { set +ex; } 2>/dev/null
-  else
-    set -ex
-    anpb cdev_install.yml -e h=$INSTALL_ANPB_HP
-    { set +ex; } 2>/dev/null
-  fi
+  [[ $EVAL -ne 1 ]] && EVAL_OPT="--check --diff" || EVAL_OPT=""
+
+  set -ex
+  anpb cdev_install.yml -e h=$INSTALL_ANPB_HP $EVAL_OPT
+  { set +ex; } 2>/dev/null
 
   exit 0
 fi
@@ -530,11 +526,11 @@ if [ $QUIET -eq 0 ]; then
     regi="[none]"
   else
     regi=$(echo $REGISTRY_HOST|awk '{print $1}')
-    [[ "$REGP" != "" ]] && regi=${regi}/${REGP}/${REPO} || regi=${regi}/${REPO}
-    [[ "$VER" = "" ]] && regi=${regi}:latest || regi=${regi}:${VER}${SUFFIX}
+    [[ "$REGP" != "" ]] && regi=$regi/$REGP/$REPO || regi=$regi/$REPO
+    [[ "$VER" = "" ]] && regi=$regi:latest || regi=$regi:${VER}${SUFFIX}
   fi
   echo "regi   = $regi"
-  echo "save   = ${PREFIX}-${REPO}-${VER}-$(date -d @$DATE '+%Y%m%d%H%M')${SUFFIX}.tar"
+  echo "save   = $PREFIX-$REPO-$VER-$(date -d @$DATE '+%Y%m%d%H%M')$SUFFIX.tar"
 
   echo "k8s    = ${KUBECONFIG:-[none]}"
 
