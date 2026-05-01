@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260420"
+VERSION_BIN="260501"
 
 SN="${0##*/}"
 ID="[$SN]"
