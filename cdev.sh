@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260501"
+VERSION_BIN="260510"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -224,7 +224,7 @@ while [ $# -gt 0 ]; do
       shift; shift
       ;;
     -t)
-      DATE=$(echo -n $2|sed 's/^\(........\)\(....\)\(.*\)/\1 \2/')
+      DATE=$(echo -n $2|sed 's/^\(......\)\(....\)\(.*\)/\1 \2/')
       DATE=$(date -d "$DATE" +%s)
       shift; shift
       ;;
@@ -396,7 +396,7 @@ VER=$(echo $VERS|awk '{printf "%s",$1}')
 [[ "$NA1" = "1"  ]] && RUN_OPT_CUSTOM1=""
 [[ "$NA2" = "1"  ]] && RUN_OPT_CUSTOM2=""
 [[ "$DATE" = ""  ]] && DATE="$(date '+%s')"
-[[ "$VER" != ""  ]] && TAGS="$VER.$(date -d @$DATE '+%Y%m%d%H%M') $TAGS"
+[[ "$VER" != ""  ]] && TAGS="$VER.$(date -d @$DATE '+%y%m%d%H%M') $TAGS"
 [[ "$TAG" != ""  ]] && TAGS="$TAGS $TAG"
 [[ "$FREG" != "" ]] && FROM="$FREG/$FROM"
 
@@ -530,7 +530,7 @@ if [ $QUIET -eq 0 ]; then
     [[ "$VER" = "" ]] && regi=$regi:latest || regi=$regi:${VER}${SUFFIX}
   fi
   echo "regi   = $regi"
-  echo "save   = $PREFIX-$REPO-$VER-$(date -d @$DATE '+%Y%m%d%H%M')$SUFFIX.tar"
+  echo "save   = $PREFIX-$REPO-$VER-$(date -d @$DATE '+%y%m%d%H%M')$SUFFIX.tar"
 
   echo "k8s    = ${KUBECONFIG:-[none]}"
 
@@ -606,10 +606,10 @@ if [ $SLOAD -ne 0 ]; then
 
     ls is-*.tar 2>/dev/null | sort | \
     while read I; do
-      R=$(echo $I|sed -E -n 's/^is-([a-zA-Z-].*)-([0-9a-zA-Z.].*)-([0-9]{12}).*/\1/p')
-      V=$(echo $I|sed -E -n 's/^is-([a-zA-Z-].*)-([0-9a-zA-Z.].*)-([0-9]{12}).*/\2/p')
-      t=$(echo $I|sed -E -n 's/^is-([a-zA-Z-].*)-([0-9a-zA-Z.].*)-([0-9]{12}).*/\3/p')
-      S=$(echo $I|sed -E -n 's/^(.*)-([0-9]{12})-(.*).tar/\3/p')
+      R=$(echo $I|sed -E -n 's/^is-([a-zA-Z-].*)-([0-9a-zA-Z.].*)-([0-9]{10}).*/\1/p')
+      V=$(echo $I|sed -E -n 's/^is-([a-zA-Z-].*)-([0-9a-zA-Z.].*)-([0-9]{10}).*/\2/p')
+      t=$(echo $I|sed -E -n 's/^is-([a-zA-Z-].*)-([0-9a-zA-Z.].*)-([0-9]{10}).*/\3/p')
+      S=$(echo $I|sed -E -n 's/^(.*)-([0-9]{10})-(.*).tar/\3/p')
       S=${S:+-S-}$S
       set -ex
       cdev.sh -q -il $SDIR/$I -R $R -V $V -t $t $S -ic $P $A 2>&1 | sed 's/^/  /'
@@ -627,7 +627,7 @@ if [ $SLOAD -ne 0 ]; then
 
     if [ "$REPO" != "" ]; then
       echo
-      D="$(date -d @$DATE '+%Y%m%d%H%M')"
+      D="$(date -d @$DATE '+%y%m%d%H%M')"
       for t in ${VER}${SUFFIX} $TAGS; do
         TSRC=$PREFIX/$REPO:$VER.${D}${SUFFIX}
         TDST=$PREFIX/$REPO:$t
@@ -691,7 +691,7 @@ if [ $BUILD -ne 0 ]; then
     exit 1
   fi
 
-  D="$(date -d @$DATE '+%Y-%m-%d_%H:%M:%S')"
+  D="$(date -d @$DATE '+%y-%m-%d_%H:%M:%S')"
   HR="$(getent hosts repo | awk '{print $1}')"
   [[ "$HR" != "" ]] && BUILD_OPT_ADD_HOST="--add-host=repo:$HR"
   [[ "$FROM" != "" ]] && BUILD_OPT_ADD_ARG="--build-arg FROM="$FROM""
@@ -768,7 +768,7 @@ if [ $SAVE -ne 0 ]; then
     exit 1
   fi
 
-  T=$(date -d @$DATE '+%Y%m%d%H%M')
+  T=$(date -d @$DATE '+%y%m%d%H%M')
 
   set -ex
   docker save -o $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar $PREFIX/$REPO:$VER.${T}${SUFFIX}
@@ -839,7 +839,7 @@ if [ $DELR -ne 0 ]; then
   for r in $REGISTRY_HOST; do
     [[ "$REGP" != "" ]] && FREPO=$REGP/$REPO || FREPO=$REPO
     echo "[$r/$FREPO]"
-    TAGS=$(curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/$FREPO/tags/list|jq|grep -E '\.[0-9]{12}'|
+    TAGS=$(curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/$FREPO/tags/list|jq|grep -E '\.[0-9]{10}'|
       xargs -L1 |sed 's/,$//' |awk -F. '{print $NF,$0}'|sort -nr|cut -f2- -d' '|sed "1,${DELR}d"|sort -n)
     for TAG in $TAGS; do
       DCD=$(curl --netrc-file $REGISTRY_AUTH -s -I -k -H "Accept:application/vnd.docker.distribution.manifest.v2+json" $r/v2/$FREPO/manifests/$TAG|
