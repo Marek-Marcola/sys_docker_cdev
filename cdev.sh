@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260510"
+VERSION_BIN="260603"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -28,10 +28,11 @@ SDIR="/dep/i"
 WIDTH=80
 KEEPR=20
 
-VERSION=0
 INSTALL_RSYNC=0
 INSTALL_ANPB=0
 INSTALL_ANPB_HP="cdev"
+VERSION=0
+STAGE_LIST=0
 PULL=0
 BUILD=0
 BUILDF=0
@@ -67,6 +68,8 @@ s=0
 ls | grep -q Dockerfile
 [[ $? -eq 0 ]] && REPO="$(basename $(pwd))"
 
+: ${COMM:=$(readlink -f ${BASH_SOURCE})}
+
 while [ $# -gt 0 ]; do
   case $1 in
     --vers*|-vers*)
@@ -80,6 +83,10 @@ while [ $# -gt 0 ]; do
     --anpb|-anpb)
       INSTALL_ANPB=1
       [[ -n "$2" && ${2:0:1} != "-" ]] && INSTALL_ANPB_HP="$2" && shift
+      shift
+      ;;
+    --stage|-stage)
+      STAGE_LIST=1
       shift
       ;;
     -P)
@@ -301,6 +308,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -version                                                # version"
   echo "$SN -install                                                # install with rsync"
   echo "$SN -anpb [host_pattern] [-x]                               # install with ansible"
+  echo "$SN -stage                                                  # stage list"
   echo ""
   echo "$SN -P  [-R repo] [-F from] [-FR reg]                       # pull, repo, from_image, from_reg"
   echo "$SN -b  [-R repo] [-V vers] [-T tags] [-t date]             # build, repo, versions, tags, tag YYYYMMDDhhmm"
@@ -496,6 +504,14 @@ if [ $INSTALL_ANPB -eq 1 ]; then
   anpb cdev_install.yml -e h=$INSTALL_ANPB_HP $EVAL_OPT
   { set +ex; } 2>/dev/null
 
+  exit 0
+fi
+
+#
+# stage: STAGE-LIST
+#
+if [ $STAGE_LIST -eq 1 ]; then
+  cat $COMM | grep '^#' | grep 'stage:'
   exit 0
 fi
 
