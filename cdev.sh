@@ -736,7 +736,7 @@ if [ $BUILD -ne 0 ]; then
     --build-arg REPO="$REPO" \
     --build-arg VER="$VER" \
     --build-arg VERS="$VERS" \
-    --label info.cdev="$D,$REPO,$VER,$FROM" \
+    --label info.cdev="$D,REPO=$REPO,VER=$VER,FROM=$FROM" \
     --tag $PREFIX/$REPO:${VER}${SUFFIX} \
     --file $DFILE \
     --force-rm \
@@ -1001,14 +1001,26 @@ if [ $CHAIN -ne 0 ]; then
     exit 1
   fi
 
-  docker image history --format "table {{printf \"%.1000s\" .CreatedBy}}" --no-trunc $PREFIX/$REPO:$VER$SUFFIX | \
-    grep ENV | \
-    grep INFO_DATE | \
-    awk -FENV '{print $2}' | \
-    xargs -L1 | \
-    sed 's/INFO_//g' | \
-    sed 's/DATE=//g' | \
-    column -t
+  docker image history $PREFIX/$REPO:$VER$SUFFIX | grep info.cdev > /dev/null 2>&1
+
+  if [ $? -eq 0 ]; then
+    docker image history --format "table {{printf \"%.1000s\" .CreatedBy}}" --no-trunc $PREFIX/$REPO:$VER$SUFFIX | \
+      grep info.cdev | \
+      awk -FLABEL '{print $2}' | \
+      awk -F\" '{print $4}' | \
+      xargs -L1 | sed 's/,/ /g' | \
+      column -t
+  else
+    docker image history --format "table {{printf \"%.1000s\" .CreatedBy}}" --no-trunc $PREFIX/$REPO:$VER$SUFFIX | \
+      grep ENV | \
+      grep INFO_DATE | \
+      awk -FENV '{print $2}' | \
+      xargs -L1 | \
+      sed 's/INFO_//g' | \
+      sed 's/DATE=//g' | \
+      column -t
+  fi
+
   true
 fi
 
