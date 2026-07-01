@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260629"
+VERSION_BIN="260701"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -736,6 +736,7 @@ if [ $BUILD -ne 0 ]; then
     --build-arg REPO="$REPO" \
     --build-arg VER="$VER" \
     --build-arg VERS="$VERS" \
+    --label info.cdev="$D,$REPO,$VER,$FROM" \
     --tag $PREFIX/$REPO:${VER}${SUFFIX} \
     --file $DFILE \
     --force-rm \
