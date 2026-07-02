@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260701"
+VERSION_BIN="260702"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -847,7 +847,7 @@ if [ $LIST -eq 2 ]; then
       [[ "$REGP" != "" ]] && FREPO=$REGP/$REPO || FREPO=$REPO
       echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/$FREPO/tags/list | jq
     else
-      echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/_catalog | jq
+      echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -s -k -L "$r/v2/_catalog?n=500" | jq
     fi
   done
 fi
