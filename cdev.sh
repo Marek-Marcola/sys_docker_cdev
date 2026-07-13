@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260708"
+VERSION_BIN="260713"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -305,6 +305,8 @@ done
 # stage: HELP
 #
 if [ $HELP -eq 1 ]; then
+  echo "Container development tools."
+  echo ""
   echo "$SN -ver                                                    # version"
   echo "$SN -inst [-x]                                              # install with rsync"
   echo "$SN -anpb [host_pattern] [-x]                               # install with ansible"
