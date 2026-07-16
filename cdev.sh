@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260713"
+VERSION_BIN="260716"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -305,7 +305,7 @@ done
 # stage: HELP
 #
 if [ $HELP -eq 1 ]; then
-  echo "Container development tools."
+  echo "Container development tools (docker,podman)."
   echo ""
   echo "$SN -ver                                                    # version"
   echo "$SN -inst [-x]                                              # install with rsync"
