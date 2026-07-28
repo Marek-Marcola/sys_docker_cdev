@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260719"
+VERSION_BIN="260728"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -802,6 +802,10 @@ if [ $SAVE -ne 0 ]; then
 
   set -ex
   docker save -o $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar $PREFIX/$REPO:$VER.${T}${SUFFIX}
+  { set +ex; } 2>/dev/null
+
+  echo
+  set -ex
   chmod a+r $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar
   ls -ogh --time-style=long $SDIR/$PREFIX-$REPO-$VER-${T}${SUFFIX}.tar
   { set +ex; } 2>/dev/null
