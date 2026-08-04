@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260728"
+VERSION_BIN="260805"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -928,7 +928,10 @@ if [ $HIST -ne 0 ]; then
   fi
 
   set -ex
-  docker image history --format "table {{printf \"%.19s\" .ID}}\t{{.CreatedSince}}\t{{printf \"%.${HIST}s\" .CreatedBy}}\t{{.Size}}" --no-trunc $PREFIX/$REPO:$VER
+  docker image history \
+    --format "table {{printf \"%.19s\" .ID}}\t{{.CreatedSince}}\t{{printf \"%.${HIST}s\" .CreatedBy}}\t{{.Size}}" \
+    --no-trunc \
+    $PREFIX/$REPO:$VER
   { set +ex; } 2>/dev/null
 fi
 
