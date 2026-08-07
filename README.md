@@ -9,9 +9,9 @@ Install
 -------
 Install:
 
-    ./cdev.sh --inst -x
+    cdev.sh --inst -x
     -- or --
-    ./cdev.sh --anpb -x
+    cdev.sh --anpb -x
     -- or --
     cp -fv cdev.env /usr/local/etc
     cp -fv cdev.sh /usr/local/bin
