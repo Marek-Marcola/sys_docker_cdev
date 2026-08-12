@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260805"
+VERSION_BIN="260812"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -58,6 +58,8 @@ ESHOW=0
 HELP=0
 QUIET=0
 
+PODMAN=""
+
 declare -a ARGS1
 ARGS2=""
 NA1=0
@@ -69,6 +71,10 @@ ls | grep -q Dockerfile
 [[ $? -eq 0 ]] && REPO="$(basename $(pwd))"
 
 : ${COMM:=$(readlink -f ${BASH_SOURCE})}
+
+if [ $(type -t podman) ]; then
+  PODMAN=1
+fi
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -893,7 +899,7 @@ fi
 #
 if [ $DEL -ne 0 ]; then
   (( $s != 0 )) && echo; ((++s))
-  echo "$ID: stage: DELETE (keep=$DEL_KEEP)"
+  echo "$ID: stage: DELETE (keep=$DEL_KEEP,EVAL=$EVAL)"
 
   if [ "$REPO" = "" ]; then
     echo "$ID: error: require repo"
@@ -905,12 +911,26 @@ if [ $DEL -ne 0 ]; then
     exit 1
   fi
 
+  if [ -z "$PODMAN" ]; then
+    R="$PREFIX/$REPO"
+  else
+    R="--filter reference=$PREFIX/$REPO"
+  fi
+
   if [ $DEL_KEEP -eq 0 ]; then
     docker image ls -q $PREFIX/$REPO | tac | xargs -L1 -tr docker image rm -f
   else
     B=$(docker image ls --format "{{.ID}}" $PREFIX/$REPO | uniq | head -$DEL_KEEP | tail -1)
     if [ "$B" != "" ]; then
-      docker image ls -q --filter before=$B $PREFIX/$REPO | tac | xargs -L1 -tr docker image rm -f
+      docker image ls -q --filter before=$B $R | tac | \
+      while read ID; do
+        echo "# ID=$ID"
+        if [ $EVAL -ne 0 ]; then
+          set -ex
+          docker image rm -f $ID
+          { set +ex; } 2>/dev/null
+        fi
+      done
     fi
   fi
 fi
