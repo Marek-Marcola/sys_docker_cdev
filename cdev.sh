@@ -105,6 +105,7 @@ while [ $# -gt 0 ]; do
       PUSH=1
       LIST=2
       DEL=1
+      EVAL=1
       shift
       ;;
     -bpsd)
@@ -115,6 +116,7 @@ while [ $# -gt 0 ]; do
       SAVE=1
       SDIR=/tmp
       DEL=1
+      EVAL=1
       shift
       ;;
     -lpa)
@@ -335,7 +337,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -k  [-R repo] [-V ver|tag] [args1] [-- args2]           # k8s run reg/prefix/repo:tag"
   echo ""
   echo "$SN -dr[k] [-R repo] [-x]                                   # image delete regs/prefix/repo (default: k[eep]=$KEEPR),show,run"
-  echo "$SN -d[k]  [-R repo]                                        # image delete prefix/repo (default: k[eep]=$DEL_KEEP)"
+  echo "$SN -d[k]  [-R repo] [-x]                                   # image delete prefix/repo (default: k[eep]=$DEL_KEEP),show,run"
   echo "$SN -H[w]  [-R repo]                                        # image history (default: w[idth]=$WIDTH)"
   echo "$SN -i                                                      # image inspect"
   echo "$SN -ic                                                     # image chain"
@@ -348,8 +350,8 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -ls                                                     # spooler list"
   echo "$SN -lpa                                                    # alias: -il /dep/i -p -A -q"
   echo ""
-  echo "$SN -bpd                                                    # alias: -b -p -lr -ic -d"
-  echo "$SN -bpsd                                                   # alias: -b -p -lr -ic -d -is /tmp"
+  echo "$SN -bpd                                                    # alias: -b -p -lr -ic -d -x"
+  echo "$SN -bpsd                                                   # alias: -b -p -lr -ic -d -x -is /tmp"
   echo ""
   echo "$SN -s [re]                                                 # env show"
   echo "$SN                                                         # info"
