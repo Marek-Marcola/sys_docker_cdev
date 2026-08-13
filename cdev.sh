@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260812"
+VERSION_BIN="260813"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -891,7 +891,7 @@ if [ $DELR -ne 0 ]; then
       DCD=$(curl --netrc-file $REGISTRY_AUTH -s -I -k $H $r/v2/$FREPO/manifests/$TAG|
         grep -i docker-content-digest|awk '{print $2}' | tr -d "\t\r\n")
       if [ "$DCD" != "" ]; then
-        echo "# $TAG"
+        echo "# TAG=$TAG"
         if [ $EVAL -ne 0 ]; then
           echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -k $H -X DELETE $r/v2/$FREPO/manifests/$DCD
         fi
