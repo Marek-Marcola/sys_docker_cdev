@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260813"
+VERSION_BIN="260823"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -29,6 +29,7 @@ WIDTH=80
 KEEPR=20
 
 INSTALL_RSYNC=0
+INSTALL_RSYNC_HL=""
 INSTALL_ANPB=0
 INSTALL_ANPB_HP="cdev"
 VERSION=0
@@ -84,6 +85,7 @@ while [ $# -gt 0 ]; do
       ;;
     --inst*|-inst*)
       INSTALL_RSYNC=1
+      [[ -n "$2" && ${2:0:1} != "-" ]] && INSTALL_RSYNC_HL="$(echo $2|sed 's/,/ /g')" && shift
       shift
       ;;
     --anpb|-anpb)
@@ -316,7 +318,7 @@ if [ $HELP -eq 1 ]; then
   echo "Container development tools (docker,podman)."
   echo ""
   echo "$SN -ver                                                    # version"
-  echo "$SN -inst [-x]                                              # install with rsync"
+  echo "$SN -inst [host_list]    [-x]                               # install with rsync"
   echo "$SN -anpb [host_pattern] [-x]                               # install with ansible"
   echo "$SN -stage                                                  # stage list"
   echo ""
@@ -485,9 +487,17 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
       fi
     done
   elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env ]; then
-    set -ex
-    rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env /usr/local/etc/
-    { set +ex; } 2>/dev/null
+    if [ -n "$INSTALL_RSYNC_HL" ]; then
+      for h in $INSTALL_RSYNC_HL; do
+        set -ex
+        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env $h:/usr/local/etc/cdev.env
+        { set +ex; } 2>/dev/null
+      done
+    else
+      set -ex
+      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env /usr/local/etc/cdev.env
+      { set +ex; } 2>/dev/null
+    fi
   fi
 
   if [ -f cdev.sh ]; then
@@ -499,9 +509,17 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
       fi
     done
   elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh ]; then
-    set -ex
-    rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh /usr/local/bin/
-    { set +ex; } 2>/dev/null
+    if [ -n "$INSTALL_RSYNC_HL" ]; then
+      for h in $INSTALL_RSYNC_HL; do
+        set -ex
+        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh $h:/usr/local/bin/cdev.sh
+        { set +ex; } 2>/dev/null
+      done
+    else
+      set -ex
+      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh /usr/local/bin/cdev.sh
+      { set +ex; } 2>/dev/null
+    fi
   fi
 
   exit 0
