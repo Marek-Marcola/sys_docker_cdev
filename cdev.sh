@@ -433,6 +433,9 @@ if [ $DEBUG != 0 -o $BUILDKIT != 0 ]; then
   BUILD_OPT_DEBUG="--progress plain"
 fi
 
+: ${BUILDAH_FORMAT:=docker}
+export BUILDAH_FORMAT
+
 if [ "$DFILE" != "" ]; then
   :
 elif [ -f Dockerfile-${REPO}-${VER}${INST} ]; then
@@ -1053,6 +1056,8 @@ if [ $CHAIN -ne 0 ]; then
     echo "$ID: error: require repo,ver"
     exit 1
   fi
+
+  echo "ManifestType       $(podman image inspect --format '{{ .ManifestType }}' $PREFIX/$REPO:$VER$SUFFIX)"
 
   docker image history $PREFIX/$REPO:$VER$SUFFIX | grep info.cdev > /dev/null 2>&1
 
