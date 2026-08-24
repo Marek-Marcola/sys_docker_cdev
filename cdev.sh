@@ -723,6 +723,7 @@ if [ $SLIST -ne 0 ]; then
   cd $SDIR
   tree --noreport -F -C -L 1 -f $SDIR
   { set +ex; } 2>/dev/null
+  echo $(du -sh . | awk '{print $1}')
 fi
 
 #
