@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260823"
+VERSION_BIN="260824"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -85,7 +85,7 @@ while [ $# -gt 0 ]; do
       ;;
     --inst*|-inst*)
       INSTALL_RSYNC=1
-      [[ -n "$2" && ${2:0:1} != "-" ]] && INSTALL_RSYNC_HL="$(echo $2|sed 's/,/ /g')" && shift
+      [[ -n "$2" && ${2:0:1} != "-" ]] && INSTALL_RSYNC_HL="$2" && shift
       shift
       ;;
     --anpb|-anpb)
@@ -477,7 +477,7 @@ fi
 #
 if [ $INSTALL_RSYNC -eq 1 ]; then
   (( $s != 0 )) && echo; ((++s))
-  echo "$ID: stage: INSTALL-RSYNC (EVAL=$EVAL)"
+  echo "$ID: stage: INSTALL-RSYNC (EVAL=$EVAL HL=$INSTALL_RSYNC_HL)"
 
   [[ $EVAL -ne 1 ]] && EVAL_OPT="-n" || EVAL_OPT=""
 
@@ -491,7 +491,7 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
     done
   elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env ]; then
     if [ -n "$INSTALL_RSYNC_HL" ]; then
-      for h in $INSTALL_RSYNC_HL; do
+      for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
         set -ex
         rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env $h:/usr/local/etc/cdev.env
         { set +ex; } 2>/dev/null
@@ -513,7 +513,7 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
     done
   elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh ]; then
     if [ -n "$INSTALL_RSYNC_HL" ]; then
-      for h in $INSTALL_RSYNC_HL; do
+      for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
         set -ex
         rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh $h:/usr/local/bin/cdev.sh
         { set +ex; } 2>/dev/null
@@ -533,7 +533,7 @@ fi
 #
 if [ $INSTALL_ANPB -eq 1 ]; then
   (( $s != 0 )) && echo; ((++s))
-  echo "$ID: stage: INSTALL-ANPB (EVAL=$EVAL)"
+  echo "$ID: stage: INSTALL-ANPB (EVAL=$EVAL HP=$INSTALL_ANPB_HP)"
 
   if [ ! $(type -t anpb) ]; then
     echo "$ID: error: command not found: anpb"
