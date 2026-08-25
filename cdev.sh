@@ -436,7 +436,7 @@ fi
 : ${BUILDAH_FORMAT:=docker}
 export BUILDAH_FORMAT
 
-: ${DURL:="http://repo/sw/opensource"}
+: ${DURL:="http://repo"}
 : ${DOPT:="-sSL -f -k"}
 
 if [ "$DFILE" != "" ]; then
