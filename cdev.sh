@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260824"
+VERSION_BIN="260825"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -436,6 +436,9 @@ fi
 : ${BUILDAH_FORMAT:=docker}
 export BUILDAH_FORMAT
 
+: ${DURL:="http://repo/sw/opensource"}
+: ${DOPT:="-sSL -f -k"}
+
 if [ "$DFILE" != "" ]; then
   :
 elif [ -f Dockerfile-${REPO}-${VER}${INST} ]; then
@@ -591,6 +594,9 @@ if [ $QUIET -eq 0 ]; then
   echo "save   = $PREFIX-$REPO-$VER-$(date -d @$DATE '+%y%m%d%H%M')$SUFFIX.tar"
 
   echo "k8s    = ${KUBECONFIG:-[none]}"
+
+  echo "durl   = ${DURL:-[none]}"
+  echo "dopt   = ${DOPT:-[none]}"
 
   if [ "${ARGS1[*]}" != "" -o "$RUN_OPT_CUSTOM1" != "" ]; then
     echo "args1  = $RUN_OPT_CUSTOM1 ${ARGS1[*]}"
@@ -768,6 +774,8 @@ if [ $BUILD -ne 0 ]; then
     --build-arg REPO="$REPO" \
     --build-arg VER="$VER" \
     --build-arg VERS="$VERS" \
+    --build-arg DURL="$DURL" \
+    --build-arg DOPT="$DOPT" \
     --label info.cdev="$D,REPO=$REPO,VER=$VER,FROM=$FROM" \
     --tag $PREFIX/$REPO:${VER}${SUFFIX} \
     --file $DFILE \
