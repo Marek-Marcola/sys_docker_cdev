@@ -593,13 +593,13 @@ if [ $QUIET -eq 0 ]; then
   echo "regi   = $regi"
   echo "save   = $PREFIX-$REPO-$VER-$(date -d @$DATE '+%y%m%d%H%M')$SUFFIX.tar"
 
-  echo "k8s    = ${KUBECONFIG:-[none]}"
-
   echo "durl   = ${DURL:-[none]}"
   echo "dopt   = ${DOPT:-[none]}"
 
+  echo "k8s    = ${KUBECONFIG:-[none]}"
+
   if [ "${ARGS1[*]}" != "" -o "$RUN_OPT_CUSTOM1" != "" ]; then
-    echo "args1  = $RUN_OPT_CUSTOM1 ${ARGS1[*]}"
+    echo "args1  = $(echo $RUN_OPT_CUSTOM1 ${ARGS1[*]}|sed 's/--/\n--/g'|grep -v '^$'|sed '2,$s/^--/         --/')"
   else
     echo "args1  = [none]"
   fi
