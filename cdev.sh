@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260825"
+VERSION_BIN="260829"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -484,8 +484,30 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
 
   [[ $EVAL -ne 1 ]] && EVAL_OPT="-n" || EVAL_OPT=""
 
+  if [ -f cdev.sh ]; then
+    for d in /usr/local/bin/ /pub/pkb/pb/playbooks/999210-cdev/files/; do
+      if [ -d $d ]; then
+        set -ex
+        rsync -ai $EVAL_OPT cdev.sh $d
+        { set +ex; } 2>/dev/null
+      fi
+    done
+  elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh ]; then
+    if [ -n "$INSTALL_RSYNC_HL" ]; then
+      for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
+        set -ex
+        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh $h:/usr/local/bin/cdev.sh
+        { set +ex; } 2>/dev/null
+      done
+    else
+      set -ex
+      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh /usr/local/bin/cdev.sh
+      { set +ex; } 2>/dev/null
+    fi
+  fi
+
   if [ -f cdev.env ]; then
-    for d in /usr/local/etc/ /pub/pkb/kb/data/999210-cdev/999210-000020_cdev_script/ /pub/pkb/pb/playbooks/999210-cdev/files/; do
+    for d in /usr/local/etc/ /pub/pkb/pb/playbooks/999210-cdev/files/; do
       if [ -d $d ]; then
         set -ex
         rsync -ai $EVAL_OPT cdev.env $d
@@ -506,24 +528,24 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
     fi
   fi
 
-  if [ -f cdev.sh ]; then
-    for d in /usr/local/bin/ /pub/pkb/kb/data/999210-cdev/999210-000020_cdev_script/ /pub/pkb/pb/playbooks/999210-cdev/files/; do
+  if [ -f zlocal-cdev.sh ]; then
+    for d in /etc/profile.d/ /pub/pkb/pb/playbooks/999210-cdev/files/; do
       if [ -d $d ]; then
         set -ex
-        rsync -ai $EVAL_OPT cdev.sh $d
+        rsync -ai $EVAL_OPT zlocal-cdev.sh $d
         { set +ex; } 2>/dev/null
       fi
     done
-  elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh ]; then
+  elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/zlocal-cdev.sh ]; then
     if [ -n "$INSTALL_RSYNC_HL" ]; then
       for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
         set -ex
-        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh $h:/usr/local/bin/cdev.sh
+        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/zlocal-cdev.sh $h:/etc/profile.d/zlocal-cdev.sh
         { set +ex; } 2>/dev/null
       done
     else
       set -ex
-      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh /usr/local/bin/cdev.sh
+      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/zlocal-cdev.sh /etc/profile.d/zlocal-cdev.sh
       { set +ex; } 2>/dev/null
     fi
   fi
