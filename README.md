@@ -19,8 +19,8 @@ Install:
 
 Verify:
 
-    cdev.sh --ver
+    c --ver
 
 Help:
 
-    cdev.sh --help
+    c --help
