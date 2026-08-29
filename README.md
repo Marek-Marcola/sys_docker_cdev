@@ -13,17 +13,9 @@ Install:
     -- or --
     cdev.sh --anpb -x
     -- or --
-    cp -fv cdev.env /usr/local/etc
     cp -fv cdev.sh /usr/local/bin
-
-Postinstall:
-
-    # cat > /etc/profile.d/zlocal-cdev.sh <<\EOF
-    c() {
-      local desc="@@container development (via cdev.sh)@@"
-      cdev.sh $@
-    }
-    EOF
+    cp -fv cdev.env /usr/local/etc
+    cp -fv zlocal-cdev.sh /etc/profile.d
 
 Verify:
 
