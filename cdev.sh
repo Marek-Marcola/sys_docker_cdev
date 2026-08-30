@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260829"
+VERSION_BIN="260831"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -29,7 +29,7 @@ WIDTH=80
 KEEPR=20
 
 INSTALL_RSYNC=0
-INSTALL_RSYNC_HL=""
+INSTALL_RSYNC_HL="$(hostname -s)"
 INSTALL_ANPB=0
 INSTALL_ANPB_HP="cdev"
 VERSION=0
@@ -493,17 +493,11 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
       fi
     done
   elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh ]; then
-    if [ -n "$INSTALL_RSYNC_HL" ]; then
-      for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
-        set -ex
-        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh $h:/usr/local/bin/cdev.sh
-        { set +ex; } 2>/dev/null
-      done
-    else
+    for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
       set -ex
-      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh /usr/local/bin/cdev.sh
+      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.sh $h:/usr/local/bin/cdev.sh
       { set +ex; } 2>/dev/null
-    fi
+    done
   fi
 
   if [ -f cdev.env ]; then
@@ -515,17 +509,11 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
       fi
     done
   elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env ]; then
-    if [ -n "$INSTALL_RSYNC_HL" ]; then
-      for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
-        set -ex
-        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env $h:/usr/local/etc/cdev.env
-        { set +ex; } 2>/dev/null
-      done
-    else
+    for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
       set -ex
-      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env /usr/local/etc/cdev.env
+      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/cdev.env $h:/usr/local/etc/cdev.env
       { set +ex; } 2>/dev/null
-    fi
+    done
   fi
 
   if [ -f zlocal-cdev.sh ]; then
@@ -537,17 +525,11 @@ if [ $INSTALL_RSYNC -eq 1 ]; then
       fi
     done
   elif [ -f /pub/pkb/pb/playbooks/999210-cdev/files/zlocal-cdev.sh ]; then
-    if [ -n "$INSTALL_RSYNC_HL" ]; then
-      for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
-        set -ex
-        rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/zlocal-cdev.sh $h:/etc/profile.d/zlocal-cdev.sh
-        { set +ex; } 2>/dev/null
-      done
-    else
+    for h in $(echo $INSTALL_RSYNC_HL|sed 's/,/ /g'); do
       set -ex
-      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/zlocal-cdev.sh /etc/profile.d/zlocal-cdev.sh
+      rsync -ai $EVAL_OPT /pub/pkb/pb/playbooks/999210-cdev/files/zlocal-cdev.sh $h:/etc/profile.d/zlocal-cdev.sh
       { set +ex; } 2>/dev/null
-    fi
+    done
   fi
 
   exit 0
