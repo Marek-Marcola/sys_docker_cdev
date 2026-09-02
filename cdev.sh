@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260831"
+VERSION_BIN="260902"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -893,9 +893,9 @@ if [ $LIST -eq 2 ]; then
   for r in $REGISTRY_HOST; do
     if [ "$REPO" != "" ]; then
       [[ "$REGP" != "" ]] && FREPO=$REGP/$REPO || FREPO=$REPO
-      echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/$FREPO/tags/list | jq
+      echo | xargs -L1 -t curl -sSL -f -k --netrc-file $REGISTRY_AUTH $r/v2/$FREPO/tags/list | jq
     else
-      echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -s -k -L "$r/v2/_catalog?n=500" | jq
+      echo | xargs -L1 -t curl -sSL -f -k --netrc-file $REGISTRY_AUTH "$r/v2/_catalog?n=500" | jq
     fi
   done
 fi
@@ -919,15 +919,15 @@ if [ $DELR -ne 0 ]; then
   for r in $REGISTRY_HOST; do
     [[ "$REGP" != "" ]] && FREPO=$REGP/$REPO || FREPO=$REPO
     echo "[$r/$FREPO]"
-    TAGS=$(curl --netrc-file $REGISTRY_AUTH -s -k -L $r/v2/$FREPO/tags/list|jq|grep -E '\.[0-9]{10}'|xargs -L1|
+    TAGS=$(curl -sSL -f -k --netrc-file $REGISTRY_AUTH $r/v2/$FREPO/tags/list|jq|grep -E '\.[0-9]{10}'|xargs -L1|
       sed 's/,$//' |awk -F. '{print $NF,$0}'|sed 's/^20//'|sort -nr|cut -f2- -d' '|sed "1,${DELR}d"|sort -n)
     for TAG in $TAGS; do
-      DCD=$(curl --netrc-file $REGISTRY_AUTH -s -I -k $H $r/v2/$FREPO/manifests/$TAG|
+      DCD=$(curl -sSL -f -k --netrc-file $REGISTRY_AUTH -I $H $r/v2/$FREPO/manifests/$TAG|
         grep -i docker-content-digest|awk '{print $2}' | tr -d "\t\r\n")
       if [ "$DCD" != "" ]; then
         echo "# TAG=$TAG"
         if [ $EVAL -ne 0 ]; then
-          echo | xargs -L1 -t curl --netrc-file $REGISTRY_AUTH -k $H -X DELETE $r/v2/$FREPO/manifests/$DCD
+          echo | xargs -L1 -t curl -sSL -f -k --netrc-file $REGISTRY_AUTH $H -X DELETE $r/v2/$FREPO/manifests/$DCD
         fi
       fi
     done
