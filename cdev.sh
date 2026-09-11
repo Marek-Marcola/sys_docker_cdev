@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260902"
+VERSION_BIN="260911"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -543,7 +543,7 @@ if [ $INSTALL_ANPB -eq 1 ]; then
   echo "$ID: stage: INSTALL-ANPB (EVAL=$EVAL HP=$INSTALL_ANPB_HP)"
 
   if [ ! $(type -t anpb) ]; then
-    echo "$ID: error: command not found: anpb"
+    echo "$ID: E: command not found: anpb"
     exit 1
   fi
 
@@ -644,7 +644,7 @@ if [ $SLOAD -ne 0 ]; then
   echo "$ID: stage: SPOOLER-LOAD"
 
   if [ ! -f "$SDIR" -a ! -d "$SDIR" ]; then
-    echo "$ID: error: access: $SDIR"
+    echo "$ID: E: access: $SDIR"
     exit 1
   fi
 
@@ -725,7 +725,7 @@ if [ $SLIST -ne 0 ]; then
   echo "$ID: stage: SPOOLER-LIST"
 
   if [ ! -d $SDIR ]; then
-    echo "$ID: error: no spooler dir: $SDIR"
+    echo "$ID: E: no spooler dir: $SDIR"
     exit 1
   fi
 
@@ -756,7 +756,7 @@ if [ $BUILD -ne 0 ]; then
   echo "$ID: stage: BUILD"
 
   if [ "$REPO" = "" -o "$VER" = "" -o "$DFILE" = ""  ]; then
-    echo "$ID: error: require dfile,repo,ver"
+    echo "$ID: E: require dfile,repo,ver"
     exit 1
   fi
 
@@ -807,7 +807,7 @@ if [ $PUSH -ne 0 ]; then
   echo "$ID: stage: PUSH"
 
   if [ "$REPO" = "" -o "$VER" = "" -o "$REGISTRY_HOST" = ""  ]; then
-    echo "$ID: error: require repo,ver,reg"
+    echo "$ID: E: require repo,ver,reg"
     exit 1
   fi
 
@@ -832,11 +832,11 @@ if [ $SAVE -ne 0 ]; then
   echo "$ID: stage: SAVE"
 
   if [ "$REPO" = "" -o "$VER" = "" ]; then
-    echo "$ID: error: require repo,ver"
+    echo "$ID: E: require repo,ver"
     exit 1
   fi
   if [ ! -d "$SDIR" ]; then
-    echo "$ID: error: access: $SDIR"
+    echo "$ID: E: access: $SDIR"
     exit 1
   fi
 
@@ -883,10 +883,11 @@ fi
 # stage: LIST-REG
 #
 if [ $LIST -eq 2 ]; then
-  echo -e "\n$ID: stage: LIST-REG"
+  (( $s != 0 )) && echo; ((++s))
+  echo "$ID: stage: LIST-REG"
 
   if [ "$REGISTRY_HOST" = ""  ]; then
-    echo "$ID: error: require reg"
+    echo "$ID: E: require reg"
     exit 1
   fi
 
@@ -908,7 +909,7 @@ if [ $DELR -ne 0 ]; then
   echo "$ID: stage: DELETE-REG (keep=$DELR,EVAL=$EVAL)"
 
   if [ "$REPO" = "" -o "$REGISTRY_HOST" = ""  ]; then
-    echo "$ID: error: require repo,reg"
+    echo "$ID: E: require repo,reg"
     exit 1
   fi
 
@@ -942,12 +943,12 @@ if [ $DEL -ne 0 ]; then
   echo "$ID: stage: DELETE (keep=$DEL_KEEP,EVAL=$EVAL)"
 
   if [ "$REPO" = "" ]; then
-    echo "$ID: error: require repo"
+    echo "$ID: E: require repo"
     exit 1
   fi
 
   if ! [[ $DEL_KEEP =~ ^[0-9]+$ ]] ; then
-    echo "$ID: error: keep not integer"
+    echo "$ID: E: keep not integer"
     exit 1
   fi
 
@@ -983,7 +984,7 @@ if [ $HIST -ne 0 ]; then
   echo "$ID: stage: HISTORY"
 
   if [ "$REPO" = "" -o "$VER" = ""  ]; then
-    echo "$ID: error: require repo,ver"
+    echo "$ID: E: require repo,ver"
     exit 1
   fi
 
@@ -1003,7 +1004,7 @@ if [ $INSPECT -ne 0 ]; then
   echo "$ID: stage: INSPECT"
 
   if [ "$REPO" = "" -o "$VER" = ""  ]; then
-    echo "$ID: error: require repo,ver"
+    echo "$ID: E: require repo,ver"
     exit 1
   fi
 
@@ -1032,7 +1033,7 @@ if [ $PRUNE -ne 0 ]; then
     docker image prune --all
     { set +ex; } 2>/dev/null
   else
-    echo "$ID: error: supported image prune types: d - dangling, is - is/*, a - all"
+    echo "$ID: E: supported image prune types: d - dangling, is - is/*, a - all"
     exit 1
   fi
 fi
@@ -1066,7 +1067,7 @@ if [ $CHAIN -ne 0 ]; then
   echo "$ID: stage: CHAIN"
 
   if [ "$REPO" = "" -o "$VER" = ""  ]; then
-    echo "$ID: error: require repo,ver"
+    echo "$ID: E: require repo,ver"
     exit 1
   fi
 
@@ -1104,7 +1105,7 @@ if [ $FILES -ne 0 ]; then
   echo "$ID: stage: FILES"
 
   if [ "$REPO" = "" -o "$VER" = ""  ]; then
-    echo "$ID: error: require repo,ver"
+    echo "$ID: E: require repo,ver"
     exit 1
   fi
 
@@ -1121,7 +1122,7 @@ if [ $RUN -eq 1 ]; then
   echo "$ID: stage: RUN"
 
   if [ "$REPO" = "" ]; then
-    echo "$ID: error: require repo"
+    echo "$ID: E: require repo"
     exit 1
   fi
 
@@ -1141,7 +1142,7 @@ if [ $RUN -eq 2 ]; then
   echo "$ID: stage: RUN-REG"
 
   if [ "$REPO" = "" -o "$REGISTRY_HOST" = ""  ]; then
-    echo "$ID: error: require repo,reg"
+    echo "$ID: E: require repo,reg"
     exit 1
   fi
 
@@ -1163,7 +1164,7 @@ if [ $RUN -eq 3 ]; then
   echo "$ID: stage: RUN-K8S"
 
   if [ "$REPO" = "" -o "$REGISTRY_HOST" = ""  ]; then
-    echo "$ID: error: require repo,reg"
+    echo "$ID: E: require repo,reg"
     exit 1
   fi
 
@@ -1186,7 +1187,7 @@ if [ $EXEC -eq 1 ]; then
   echo "$ID: stage: EXEC"
 
   if [ "$REPO" = "" ]; then
-    echo "$ID: error: require repo"
+    echo "$ID: E: require repo"
     exit 1
   fi
 
@@ -1199,6 +1200,6 @@ if [ $EXEC -eq 1 ]; then
     docker container exec -ti $NAME $C
     { set +ex; } 2>/dev/null
   else
-    echo "$ID: error: unable to find running container: image=$PREFIX/$REPO:$T name=cdev-$REPO-xxxxx"
+    echo "$ID: E: unable to find running container: image=$PREFIX/$REPO:$T name=cdev-$REPO-xxxxx"
   fi
 fi
