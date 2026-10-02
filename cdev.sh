@@ -1071,7 +1071,7 @@ if [ $CHAIN -ne 0 ]; then
     exit 1
   fi
 
-  echo "ManifestType       $(podman image inspect --format '{{ .ManifestType }}' $PREFIX/$REPO:$VER$SUFFIX)"
+  echo "ManifestType    $(podman image inspect --format '{{ .ManifestType }}' $PREFIX/$REPO:$VER$SUFFIX)"
 
   docker image history $PREFIX/$REPO:$VER$SUFFIX | grep info.cdev > /dev/null 2>&1
 
