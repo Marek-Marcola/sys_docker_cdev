@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="260911"
+VERSION_BIN="261002"
 
 SN="${0##*/}"
 ID="[$SN]"
@@ -760,7 +760,7 @@ if [ $BUILD -ne 0 ]; then
     exit 1
   fi
 
-  D="$(date -d @$DATE '+%y-%m-%d_%H:%M:%S')"
+  D="$(date -d @$DATE '+%y-%m-%d_%H:%M')"
   HR="$(getent hosts repo | awk '{print $1}')"
   [[ "$HR" != "" ]] && BUILD_OPT_ADD_HOST="--add-host=repo:$HR"
   [[ "$FROM" != "" ]] && BUILD_OPT_ADD_ARG="--build-arg FROM="$FROM""
