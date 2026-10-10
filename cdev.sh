@@ -1,9 +1,9 @@
 #!/bin/bash
 
-VERSION_BIN="261007"
+VERSION_BIN="261010"
 
 SN="${0##*/}"
-ID="[$SN]"
+ID="[${SN%.sh}]"
 
 PREFIX="is"
 SUFFIX=""
