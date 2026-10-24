@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_BIN="261019"
+VERSION_BIN="261025"
 
 SN="${0##*/}"
 ID="[${SN%.sh}]"
@@ -772,7 +772,12 @@ if [ $SLIST -ne 0 ]; then
   cd $SDIR
   tree --noreport -F -C -L 1 -f $SDIR
   { set +ex; } 2>/dev/null
-  echo $(du -sh . | awk '{print $1}')
+
+  i=$(du -sh . | awk '{print $1}')
+
+  if [ "$i" != "0" ]; then
+    echo "[$i]"
+  fi
 fi
 
 #
