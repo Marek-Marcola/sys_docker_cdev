@@ -1,6 +1,8 @@
 #!/bin/bash
+#
+# OCI/Docker image lifecycle management.
 
-VERSION_BIN="261030"
+VERSION_BIN="261106"
 
 SN="${0##*/}"
 ID="[${SN%.sh}]"
