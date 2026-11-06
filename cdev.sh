@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# OCI/Docker image lifecycle management.
+# Docker/OCI image lifecycle management.
 
 VERSION_BIN="261106"
 
