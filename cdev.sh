@@ -218,6 +218,12 @@ while [ $# -gt 0 ]; do
       CHAIN=1
       shift
       ;;
+    -rse)
+      RUN=1
+      ARGS1+=('--entrypoint=["bash","-l"]')
+      CHAIN=1
+      shift
+      ;;
     -k)
       RUN=3
       shift
@@ -347,6 +353,7 @@ if [ $HELP -eq 1 ]; then
   echo "$SN -r  [-R repo] [-V ver|tag] [args1] [-- args2]           # docker run prefix/repo:tag"
   echo "$SN -rr [-R repo] [-V ver|tag] [args1] [-- args2]           # docker run reg/prefix/repo:tag"
   echo "$SN -rs                                                     # alias: -r -- bash -l"
+  echo "$SN -rse                                                    # alias: -r --entrypoint=[\"bash\",\"-l\"]"
   echo "$SN -e  [-R repo] [-V ver|tag] [args1]                      # docker exec in reg/prefix/repo:tag cdev-repo-xxxxx"
   echo "$SN -k  [-R repo] [-V ver|tag] [args1] [-- args2]           # k8s run reg/prefix/repo:tag"
   echo ""
@@ -1178,7 +1185,7 @@ if [ $RUN -eq 1 ]; then
   NAME=cdev-$REPO-$(shuf -zer -n5 {a..z} {0..9}|col -b)
 
   set -ex
-  docker run --rm -ti --name $NAME $RUN_OPT_CUSTOM1 ${ARGS1[*]} $PREFIX/$REPO:$T $RUN_OPT_CUSTOM2 ${ARGS2[*]}
+  docker run --rm -ti --name $NAME $RUN_OPT_CUSTOM1 "${ARGS1[@]}" $PREFIX/$REPO:$T $RUN_OPT_CUSTOM2 ${ARGS2[*]}
   { set +ex; } 2>/dev/null
 fi
 
