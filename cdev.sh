@@ -2,7 +2,7 @@
 #
 # Docker/OCI image lifecycle management.
 
-VERSION_BIN="261106"
+VERSION_BIN="261116"
 
 SN="${0##*/}"
 ID="[${SN%.sh}]"
@@ -455,8 +455,8 @@ fi
 : ${BUILDAH_FORMAT:=docker}
 export BUILDAH_FORMAT
 
-: ${DURL:="http://repo"}
-: ${DOPT:="-sSL -f -k"}
+: ${SRC_URI:="http://repo"}
+: ${SRC_OPT:="-sSL -f -k"}
 
 if [ "$DFILE" != "" ]; then
   :
@@ -619,21 +619,21 @@ if [ $QUIET -eq 0 ]; then
   (( $s != 0 )) && echo; ((++s))
   echo "$ID: stage: INFO"
 
-  [[ -n $INFO ]] && echo "info   = ${INFO}"
-  echo "cwd    = $(pwd -P)"
-  echo "efile  = ${EFILE:-[none]}"
-  echo "dfile  = ${DFILE:-[none]}"
-  echo "inst   = ${INST:-[none]}"
-  echo "from   = ${FROM:-[none]}"
-  echo "prefix = ${PREFIX:-[none]}"
-  echo "suffix = ${SUFFIX:-[none]}"
-  echo "type   = ${TYPE:-[none]}"
-  echo "repo   = ${REPO:-[none]}"
-  echo "ver    = ${VER:-[none]}"
-  echo "vers   = ${VERS:-[none]}"
-  echo "tags   = ${VER:-[none]}${SUFFIX} $TAGS"
-  echo "regs   = ${REGISTRY_HOST:-[none]}"
-  echo "regp   = ${REGP:-[none]}"
+  [[ -n $INFO ]] && echo "info    = ${INFO}"
+  echo "cwd     = $(pwd -P)"
+  echo "efile   = ${EFILE:-[none]}"
+  echo "dfile   = ${DFILE:-[none]}"
+  echo "inst    = ${INST:-[none]}"
+  echo "from    = ${FROM:-[none]}"
+  echo "prefix  = ${PREFIX:-[none]}"
+  echo "suffix  = ${SUFFIX:-[none]}"
+  echo "type    = ${TYPE:-[none]}"
+  echo "repo    = ${REPO:-[none]}"
+  echo "ver     = ${VER:-[none]}"
+  echo "vers    = ${VERS:-[none]}"
+  echo "tags    = ${VER:-[none]}${SUFFIX} $TAGS"
+  echo "regs    = ${REGISTRY_HOST:-[none]}"
+  echo "regp    = ${REGP:-[none]}"
 
   if [ "$REGISTRY_HOST" = "" -o "$REPO" = "" ]; then
     regi="[none]"
@@ -642,30 +642,30 @@ if [ $QUIET -eq 0 ]; then
     [[ "$REGP" != "" ]] && regi=$regi/$REGP/$REPO || regi=$regi/$REPO
     [[ "$VER" = "" ]] && regi=$regi:latest || regi=$regi:${VER}${SUFFIX}
   fi
-  echo "regi   = $regi"
-  echo "save   = $PREFIX-$REPO-$VER-$(date -d @$DATE '+%y%m%d%H%M')$SUFFIX.tar"
+  echo "regi    = $regi"
+  echo "save    = $PREFIX-$REPO-$VER-$(date -d @$DATE '+%y%m%d%H%M')$SUFFIX.tar"
 
-  echo "durl   = ${DURL:-[none]}"
-  echo "dopt   = ${DOPT:-[none]}"
+  echo "src_uri = ${SRC_URI:-[none]}"
+  echo "src_opt = ${SRC_OPT:-[none]}"
 
-  echo "k8s    = ${KUBECONFIG:-[none]}"
+  echo "k8s     = ${KUBECONFIG:-[none]}"
 
   if [ "${ARGS1[*]}" != "" -o "$RUN_OPT_CUSTOM1" != "" ]; then
-    echo "args1  = $(echo $RUN_OPT_CUSTOM1 ${ARGS1[*]}|sed 's/--/\n--/g'|grep -v '^$'|sed '2,$s/^--/         --/')"
+    echo "args1   = $(echo $RUN_OPT_CUSTOM1 ${ARGS1[*]}|sed 's/--/\n--/g'|grep -v '^$'|sed '2,$s/^--/          --/')"
   else
-    echo "args1  = [none]"
+    echo "args1   = [none]"
   fi
   if [ "$ARGS2" != "" -o "$RUN_OPT_CUSTOM2" != "" ]; then
-    echo "args2  = $RUN_OPT_CUSTOM2 $ARGS2"
+    echo "args2   = $RUN_OPT_CUSTOM2 $ARGS2"
   else
-    echo "args2  = [none]"
+    echo "args2   = [none]"
   fi
 
   if [ "$DOCS" != "" ]; then
-    echo -n "docs   = "
+    echo -n "docs    = "
     for s in "${DOCS[@]}"; do
       echo "$s"
-    done | sed '2,$s/^/         /'
+    done | sed '2,$s/^/          /'
   fi
 fi
 
@@ -833,8 +833,8 @@ if [ $BUILD -ne 0 ]; then
     --build-arg REPO="$REPO" \
     --build-arg VER="$VER" \
     --build-arg VERS="$VERS" \
-    --build-arg DURL="$DURL" \
-    --build-arg DOPT="$DOPT" \
+    --build-arg SRC_URI="$SRC_URI" \
+    --build-arg SRC_OPT="$SRC_OPT" \
     --label info.cdev="$D,REPO=$REPO,VER=$VER,FROM=$FROM" \
     --tag $PREFIX/$REPO:${VER}${SUFFIX} \
     --file $DFILE \
